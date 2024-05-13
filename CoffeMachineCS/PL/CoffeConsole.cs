@@ -9,39 +9,51 @@ namespace CoffeMachineCS.PL
 {
     internal class CoffeConsole
     {
-        internal int Start(Product[] items)
+        public event Func<decimal, decimal> payToCoffe;
+        public event Func<int, int> selectCoffe;
+        public event Action<string> text;
+
+        internal void ProductShow(Product[] items)
         {
             Console.WriteLine("Добро пожаловать!");
             foreach (var item in items)
             {
-                Console.WriteLine($"{item.Id}){item.Name}: {item.Price}");
+                text?.Invoke($"{item.Id}){item.Name}: {item.Price}");
             }
-            Console.WriteLine("Выберите коффе");
-            return int.Parse(Console.ReadLine());
+            text?.Invoke("Выберите коффе");
         }
 
-        internal decimal Enter(string name)
+        internal int SelectCoffe(int coffeId) 
         {
-            Console.WriteLine($"{name} почти готого, осталось только оплатить...");
-            Console.WriteLine("Внесите сумму");
-            return decimal.Parse(Console.ReadLine());
+            return selectCoffe(coffeId);
         }
 
-        internal decimal Buy(decimal current)
+        internal void Payment (string name)
         {
-            Console.WriteLine($"Осталось внести {current} руб.");
-            return decimal.Parse(Console.ReadLine());
+            text?.Invoke($"{name} почти готого, осталось только оплатить...");
+            text?.Invoke("Внесите сумму");
         }
 
-        internal void FinalMore(decimal money) 
+        internal decimal PayToCoffee(decimal pay) 
         {
-            Console.WriteLine($"Заберите сдачу {money} руб.");
+            return payToCoffe(pay);     
+        }
+
+
+        internal void LeftPay(decimal current)
+        {
+            text?.Invoke($"Осталось внести {current} руб.");
+        }
+
+        internal void ReturnMoney(decimal money) 
+        {
+            text?.Invoke($"Заберите сдачу {money} руб.");
 
         }
 
         internal void Final(string name)
         {
-            Console.WriteLine($"Приятного дня! Заберите {name}.");
+            text?.Invoke($"Приятного дня! Заберите {name}.");
         }
     }
 }
